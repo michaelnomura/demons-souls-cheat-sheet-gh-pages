@@ -13,12 +13,17 @@
     jQuery(document).ready(function($) {
 
         // TODO Find a better way to do this in one pass
+        // Add checkboxes
+        //for all 'ul li li'
         $('ul li li').each(function(index) {
+            //check for data-id
             if ($(this).attr('data-id')) {
                 addCheckbox(this);
             }
         });
+        //for all 'ul li'
         $('ul li').each(function(index) {
+            //check for data-id
             if ($(this).attr('data-id')) {
                 addCheckbox(this);
             }
@@ -27,9 +32,12 @@
         populateProfiles();
 
         $('input[type="checkbox"]').click(function() {
+            //set id to value of id
             var id = $(this).attr('id');
+            //set isChecked to checked according to which profile
             var isChecked = profiles[profilesKey][profiles.current].checklistData[id] = $(this).prop('checked');
             _gaq.push(['_trackEvent', 'Checkbox', (isChecked ? 'Check' : 'Uncheck'), id]);
+            //from the parent's parent find the first 'li > label > input[type="checkbox"]'
             $(this).parent().parent().find('li > label > input[type="checkbox"]').each(function() {
                 var id = $(this).attr('id');
                 profiles[profilesKey][profiles.current].checklistData[id] = isChecked;
@@ -46,6 +54,7 @@
             _gaq.push(['_trackEvent', 'Profile', 'Change', profiles.current]);
         });
 
+        //adds a profile
         $('#profileAdd').click(function() {
             $('#profileModalTitle').html('Add Profile');
             $('#profileModalName').val('');
@@ -55,7 +64,8 @@
             $('#profileModal').modal('show');
             _gaq.push(['_trackEvent', 'Profile', 'Add']);
         });
-
+        
+        //edits a profile
         $('#profileEdit').click(function() {
             $('#profileModalTitle').html('Edit Profile');
             $('#profileModalName').val(profiles.current);
@@ -184,7 +194,9 @@
     }
 
     function addCheckbox(el) {
+        // Creates array of elements split at /n 
         var lines = $(el).html().split('\n');
+        // adds html checkbox element to current element in array of all 
         lines[0] = '<label class="checkbox"><input type="checkbox" id="' + $(el).attr('data-id') + '">' + lines[0] + '</label>';
         $(el).html(lines.join('\n'));
         if (profiles[profilesKey][profiles.current].checklistData[$(el).attr('data-id')] == true) {
